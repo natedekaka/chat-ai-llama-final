@@ -46,9 +46,10 @@
             padding: 10px 14px;
             word-wrap: break-word;
             animation: fadeIn 0.2s ease;
-            line-height: 1.4;
+            line-height: 1.5;
             font-size: 15px;
             position: relative;
+            white-space: pre-wrap;
         }
         .msg.user { 
             background: #1a1a1a;
@@ -156,9 +157,20 @@
             addMessage("Halo! Saya AI Assistant Llama.\nGratis untuk semua!\n\nKetik pesan untuk mulai chat...", false);
         }
 
+        function formatText(text) {
+            text = text.replace(/\n{3,}/g, '\n\n');
+            text = text.trim();
+            return text;
+        }
+        
         function addMessage(text, isUser) {
             const div = document.createElement("div");
             div.className = "msg " + (isUser ? "user" : "bot");
+            
+            if (!isUser) {
+                text = formatText(text);
+            }
+            
             div.textContent = text;
             
             if (!isUser) {
