@@ -1,32 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat AI Llama - Gratis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Chat AI Llama - natedekaka</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #fff; height: 100vh; display: flex; flex-direction: column; }
-        header { background: #16213e; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        #chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 15px; word-wrap: break-word; }
-        .user { background: #3498db; align-self: flex-end; border-bottom-right-radius: 3px; }
-        .bot { background: #2c3e50; align-self: flex-start; border-bottom-left-radius: 3px; }
-        .input-area { background: #16213e; padding: 15px; display: flex; gap: 10px; }
-        input { flex: 1; padding: 12px; border: none; border-radius: 25px; background: #0f3460; color: #fff; outline: none; }
-        button { background: #e94560; color: #fff; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        html, body { height: 100%; overflow: hidden; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #1a1a2e; 
+            color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+        header { 
+            background: linear-gradient(135deg, #16213e 0%, #1a1a3e 100%); 
+            padding: 12px 15px; 
+            text-align: center; 
+            font-size: 16px; 
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        header .logo { font-size: 20px; }
+        header .brand { color: #e94560; }
+        header .tagline { font-size: 11px; color: #888; font-weight: normal; }
+        
+        #chat { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .message { 
+            max-width: 85%; 
+            padding: 12px 16px; 
+            border-radius: 18px; 
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user { 
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+            align-self: flex-end; 
+            border-bottom-right-radius: 4px;
+        }
+        .bot { 
+            background: linear-gradient(135deg, #2c3e50, #34495e); 
+            align-self: flex-start; 
+            border-bottom-left-radius: 4px;
+        }
+        .input-area { 
+            background: #16213e; 
+            padding: 12px 15px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            display: flex; 
+            gap: 10px; 
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        input { 
+            flex: 1; 
+            padding: 14px 18px; 
+            border: none; 
+            border-radius: 25px; 
+            background: #0f3460; 
+            color: #fff; 
+            outline: none;
+            font-size: 15px;
+        }
+        input::placeholder { color: #888; }
+        button { 
+            background: linear-gradient(135deg, #e94560, #c0392b); 
+            color: #fff; 
+            border: none; 
+            padding: 14px 22px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(233, 69, 96, 0.4);
+        }
         button:disabled { opacity: 0.5; }
-        .loading { text-align: center; padding: 10px; color: #888; }
-        footer { background: #16213e; padding: 10px; text-align: center; font-size: 12px; color: #888; }
+        button:active { transform: scale(0.95); }
+        .loading { 
+            text-align: center; 
+            padding: 10px; 
+            color: #888; 
+            font-size: 14px;
+        }
+        footer { 
+            background: #16213e; 
+            padding: 8px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #666;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
-    <header>🤖 Chat AI Llama - Gratis</header>
+    <header>
+        <span class="logo">🤖</span>
+        <span>Chat AI Llama</span>
+        <span class="brand">by natedekaka</span>
+    </header>
     <div id="chat"></div>
     <div class="input-area">
-        <input type="text" id="msg" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter')send()">
+        <input type="text" id="msg" placeholder="Tulis pesan..." onkeypress="if(event.key==='Enter')send()">
         <button id="sendBtn" onclick="send()">Kirim</button>
     </div>
-    <footer>@natedekaka 2026</footer>
+    <footer>by natedekaka 2026</footer>
 
     <script>
         const key = String.fromCharCode(103,115,107,95,110,82,78,88,109,54,52,65,84,98,110,74,85,70,102,67,81,111,78,103,87,71,100,121,98,51,70,89,120,57,51,116,73,110,101,100,49,53,83,54,108,77,89,55,90,88,77,80,51,49,108,113);
@@ -34,7 +134,7 @@
         const URL = "https://api.groq.com/openai/v1/chat/completions";
 
         function init() {
-            addMessage("Halo! Saya AI Assistant Llama. Gratis untuk semua!\nKetik pesan untuk mulai chat...", false);
+            addMessage("Halo! Saya AI Assistant Llama.\nGratis untuk semua! by natedekaka\n\nKetik pesan untuk mulai chat...", false);
         }
 
         function addMessage(text, isUser) {
@@ -42,7 +142,9 @@
             div.className = "message " + (isUser ? "user" : "bot");
             div.textContent = text;
             document.getElementById("chat").appendChild(div);
-            document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+            setTimeout(() => {
+                document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+            }, 100);
         }
 
         async function send() {
@@ -59,6 +161,10 @@
             loading.className = "loading";
             loading.textContent = "Mengirim...";
             document.getElementById("chat").appendChild(loading);
+            
+            setTimeout(() => {
+                document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+            }, 100);
 
             try {
                 const res = await fetch(URL, {
@@ -79,6 +185,9 @@
             }
             btn.disabled = false;
             input.focus();
+            setTimeout(() => {
+                document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+            }, 100);
         }
 
         init();
